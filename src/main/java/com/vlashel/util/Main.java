@@ -2,13 +2,14 @@ package com.vlashel.util;
 
 
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-import com.fasterxml.jackson.module.jsonSchema.customProperties.HyperSchemaFactoryWrapper;
-import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
+import com.fasterxml.jackson.module.jsonSchema.customProperties.TitleSchemaFactoryWrapper;
 import com.vlashel.dto.UserDto;
+import com.vlashel.util.JacksonJsonExtensions.customProperties.ValidationSchemaFactoryWrapper;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * @author Vladyslav Shelest
@@ -19,11 +20,12 @@ public class Main {
     public static void main(String[] args) throws Exception{
 
         ObjectMapper m = new ObjectMapper();
-        m.setAnnotationIntrospector(new CustomAnnotationIntrospector());
-        SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
+        ValidationSchemaFactoryWrapper visitor = new ValidationSchemaFactoryWrapper();
+       // TitleSchemaFactoryWrapper visitor = new TitleSchemaFactoryWrapper();
         m.acceptJsonFormatVisitor(m.constructType(UserDto.class), visitor);
         JsonSchema jsonSchema = visitor.finalSchema();
-        m.writeValue(new File("schema.json"), jsonSchema);
+
+        m.writerWithDefaultPrettyPrinter().writeValue(new File("schema.json"), jsonSchema);
 
     }
 }
